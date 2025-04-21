@@ -1,64 +1,73 @@
 package org.serratec.modelo;
 
+import org.serratec.excecao.DependenteException;
+import org.serratec.servico.CalculoINSS;
+import org.serratec.servico.Operacao;
+
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Funcionario  extends Pessoa{
-    private Double SalarioBruto;
-    private Double SalarioLiquido;
-    private Double DescontoIR;
-    private Double DescontoINSS;
+public class Funcionario  extends Pessoa implements Operacao {
+    private Double salarioBruto;
+    private Double salarioLiquido;
+    private Double descontoIR;
+    private Double descontoINSS;
     private Set<Dependente> dependentes;
 
     public Funcionario(String nome, String cpf, LocalDate dataNascimento,
                        Double salarioBruto) {
         super(nome, cpf, dataNascimento);
-        SalarioBruto = salarioBruto;
+        salarioBruto = salarioBruto;
         this.dependentes = new HashSet<>();
     }
 
     @Override
     public String toString() {
         return "Funcionario{" +
-                "SalarioBruto=" + SalarioBruto +
-                ", SalarioLiquido=" + SalarioLiquido +
-                ", DescontoIR=" + DescontoIR +
-                ", DescontoINSS=" + DescontoINSS +
+                "salarioBruto=" + salarioBruto +
+                ", salarioLiquido=" + salarioLiquido +
+                ", descontoIR=" + descontoIR +
+                ", descontoINSS=" + descontoINSS +
                 ", dependentes=" + dependentes +
+                ", id=" + id +
+                ", nome='" + nome + '\'' +
+                ", cpf='" + cpf + '\'' +
+                ", dataNascimento=" + dataNascimento +
                 '}';
     }
 
     public Double getSalarioBruto() {
-        return SalarioBruto;
+        return salarioBruto;
     }
 
     public void setSalarioBruto(Double salarioBruto) {
-        SalarioBruto = salarioBruto;
+        this.salarioBruto = salarioBruto;
     }
 
     public Double getSalarioLiquido() {
-        return SalarioLiquido;
+        return salarioLiquido;
     }
 
     public void setSalarioLiquido(Double salarioLiquido) {
-        SalarioLiquido = salarioLiquido;
+        this.salarioLiquido = salarioLiquido;
     }
 
     public Double getDescontoIR() {
-        return DescontoIR;
+        return descontoIR;
     }
 
     public void setDescontoIR(Double descontoIR) {
-        DescontoIR = descontoIR;
+        this.descontoIR = descontoIR;
     }
 
     public Double getDescontoINSS() {
-        return DescontoINSS;
+        return descontoINSS;
     }
 
     public void setDescontoINSS(Double descontoINSS) {
-        DescontoINSS = descontoINSS;
+        this.descontoINSS = descontoINSS;
     }
 
     public Set<Dependente> getDependentes() {
@@ -67,5 +76,40 @@ public class Funcionario  extends Pessoa{
 
     public void setDependentes(Set<Dependente> dependentes) {
         this.dependentes = dependentes;
+    }
+
+    @Override
+    public void adicionateDependente(Dependente dependente) throws DependenteException{
+        Integer idade = Period.between(dependente.getDataNascimento(), LocalDate.now()).getYears();
+        if (idade < 18) {
+            dependentes.add(dependente);
+        } else {
+            throw new DependenteException("Dependente deve ser menor de idade!");
+        }
+    }
+
+    @Override
+    public void calcularDescontoINSS() {
+        if (this.getSalarioBruto() <= CalculoINSS.FAIXA1.getRemuneracaoINSS()){
+            this.descontoINSS = this.getSalarioBruto() * CalculoINSS.FAIXA1.getAliquotaINSS() - CalculoINSS.FAIXA1.getParcelaINSS();
+        } else if (this.getSalarioBruto() <= CalculoINSS.FAIXA2.getRemuneracaoINSS()) {
+            this.descontoINSS = this.getSalarioBruto() * CalculoINSS.FAIXA2.getAliquotaINSS() - CalculoINSS.FAIXA2.getParcelaINSS();
+        } else if (this.getSalarioBruto() <= CalculoINSS.FAIXA3.getRemuneracaoINSS()) {
+            this.descontoINSS = this.getSalarioBruto() * CalculoINSS.FAIXA3.getAliquotaINSS() - CalculoINSS.FAIXA3.getParcelaINSS();
+        } else if (this.getSalarioBruto() <= CalculoINSS.FAIXA4.getRemuneracaoINSS()) {
+            this.descontoINSS = this.getSalarioBruto() * CalculoINSS.FAIXA4.getAliquotaINSS() - CalculoINSS.FAIXA4.getParcelaINSS();
+        } else {
+            this.descontoINSS = this.getSalarioBruto() * CalculoINSS.FAIXA4.getAliquotaINSS() - CalculoINSS.FAIXA4.getParcelaINSS();
+        }
+    }
+
+    @Override
+    public void calcularDescontoIR() {
+
+    }
+
+    @Override
+    public void calcularSalarioLiquido() {
+
     }
 }
