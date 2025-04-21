@@ -3,13 +3,14 @@ package org.serratec.modelo;
 import org.serratec.excecao.DependenteException;
 import org.serratec.servico.CalculoINSS;
 import org.serratec.servico.Operacao;
+import org.serratec.servico.CalculoIR;
 
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Funcionario  extends Pessoa implements Operacao {
+public class Funcionario extends Pessoa implements Operacao {
     private Double salarioBruto;
     private Double salarioLiquido;
     private Double descontoIR;
@@ -79,7 +80,7 @@ public class Funcionario  extends Pessoa implements Operacao {
     }
 
     @Override
-    public void adicionateDependente(Dependente dependente) throws DependenteException{
+    public void adicionateDependente(Dependente dependente) throws DependenteException {
         Integer idade = Period.between(dependente.getDataNascimento(), LocalDate.now()).getYears();
         if (idade < 18) {
             dependentes.add(dependente);
@@ -90,7 +91,7 @@ public class Funcionario  extends Pessoa implements Operacao {
 
     @Override
     public void calcularDescontoINSS() {
-        if (this.getSalarioBruto() <= CalculoINSS.FAIXA1.getRemuneracaoINSS()){
+        if (this.getSalarioBruto() <= CalculoINSS.FAIXA1.getRemuneracaoINSS()) {
             this.descontoINSS = this.getSalarioBruto() * CalculoINSS.FAIXA1.getAliquotaINSS() - CalculoINSS.FAIXA1.getParcelaINSS();
         } else if (this.getSalarioBruto() <= CalculoINSS.FAIXA2.getRemuneracaoINSS()) {
             this.descontoINSS = this.getSalarioBruto() * CalculoINSS.FAIXA2.getAliquotaINSS() - CalculoINSS.FAIXA2.getParcelaINSS();
@@ -105,11 +106,26 @@ public class Funcionario  extends Pessoa implements Operacao {
 
     @Override
     public void calcularDescontoIR() {
-
+        if (this.salarioBruto <= CalculoIR.BASE1.getBaseCalculoIR()) {
+            this.descontoIR = (this.salarioBruto - dependentes.size() * CalculoIR.valorDependentes - this.descontoINSS)
+                    * CalculoIR.BASE1.getAliquotaIR() - CalculoIR.BASE1.getParcelaIR();
+        } else if (this.salarioBruto <= CalculoIR.BASE2.getBaseCalculoIR()) {
+            this.descontoIR = (this.salarioBruto - dependentes.size() * CalculoIR.valorDependentes - this.descontoINSS)
+                    * CalculoIR.BASE2.getAliquotaIR() - CalculoIR.BASE2.getParcelaIR();
+        } else if (this.salarioBruto <= CalculoIR.BASE3.getBaseCalculoIR()) {
+            this.descontoIR = (this.salarioBruto - dependentes.size() * CalculoIR.valorDependentes - this.descontoINSS)
+                    * CalculoIR.BASE3.getAliquotaIR() - CalculoIR.BASE3.getParcelaIR();
+        } else if (this.salarioBruto <= CalculoIR.BASE4.getBaseCalculoIR()) {
+            this.descontoIR = (this.salarioBruto - dependentes.size() * CalculoIR.valorDependentes - this.descontoINSS)
+                    * CalculoIR.BASE4.getAliquotaIR() - CalculoIR.BASE4.getParcelaIR();
+        } else {
+            this.descontoIR = (this.salarioBruto - dependentes.size() * CalculoIR.valorDependentes - this.descontoINSS)
+                    * CalculoIR.BASE5.getAliquotaIR() - CalculoIR.BASE5.getParcelaIR();
+        }
     }
 
     @Override
     public void calcularSalarioLiquido() {
-
+        this.salarioLiquido = this.salarioBruto - this.descontoINSS - this.descontoIR;
     }
 }
