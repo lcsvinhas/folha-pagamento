@@ -6,8 +6,8 @@ import java.sql.SQLException;
 
 public class ConnectionFactory {
 	private String url = "jdbc:postgresql://localhost:5432/bancopoo";
-	private String user = "postgres";
-	private String password = "JyXj6*9N+t%br8v";
+	private String user = "";
+	private String password = "";
 	
 	public Connection getConnection() {
 		System.out.println("Fazendo conexão...");
