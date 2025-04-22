@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Funcionario extends Pessoa implements Operacao {
-    private Double salarioBruto;
+    private Double salarioBruto = 0.0;
     private Double salarioLiquido;
     private Double descontoIR;
     private Double descontoINSS;
@@ -20,7 +20,7 @@ public class Funcionario extends Pessoa implements Operacao {
     public Funcionario(String nome, String cpf, LocalDate dataNascimento,
                        Double salarioBruto) {
         super(nome, cpf, dataNascimento);
-        salarioBruto = salarioBruto;
+        this.salarioBruto = salarioBruto;
         this.dependentes = new HashSet<>();
     }
 
@@ -121,6 +121,9 @@ public class Funcionario extends Pessoa implements Operacao {
         } else {
             this.descontoIR = (this.salarioBruto - dependentes.size() * CalculoIR.valorDependentes - this.descontoINSS)
                     * CalculoIR.BASE5.getAliquotaIR() - CalculoIR.BASE5.getParcelaIR();
+        }
+        if(this.descontoIR < 0){
+            this.descontoIR = 0.00;
         }
     }
 
