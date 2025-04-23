@@ -4,6 +4,7 @@ import org.serratec.modelo.Funcionario;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class FuncionarioDao {
@@ -22,7 +23,7 @@ public class FuncionarioDao {
         stmt.setDouble(4, funcionario.getSalarioBruto());
         stmt.executeUpdate();
 
-        var rs = stmt.getGeneratedKeys();
+        ResultSet rs = stmt.getGeneratedKeys();
         if (rs.next()) {
             funcionario.setId(rs.getInt(1));
         }

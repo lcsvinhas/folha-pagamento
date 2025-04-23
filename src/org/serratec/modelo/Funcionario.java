@@ -102,28 +102,25 @@ public class Funcionario extends Pessoa implements Operacao {
         } else {
             this.descontoINSS = this.getSalarioBruto() * CalculoINSS.FAIXA4.getAliquotaINSS() - CalculoINSS.FAIXA4.getParcelaINSS();
         }
+        if (this.descontoINSS > CalculoINSS.teto) {
+            this.descontoINSS = CalculoINSS.teto;
+        }
     }
 
     @Override
     public void calcularDescontoIR() {
-        if (this.salarioBruto <= CalculoIR.BASE1.getBaseCalculoIR()) {
-            this.descontoIR = (this.salarioBruto - dependentes.size() * CalculoIR.valorDependentes - this.descontoINSS)
-                    * CalculoIR.BASE1.getAliquotaIR() - CalculoIR.BASE1.getParcelaIR();
-        } else if (this.salarioBruto <= CalculoIR.BASE2.getBaseCalculoIR()) {
-            this.descontoIR = (this.salarioBruto - dependentes.size() * CalculoIR.valorDependentes - this.descontoINSS)
-                    * CalculoIR.BASE2.getAliquotaIR() - CalculoIR.BASE2.getParcelaIR();
-        } else if (this.salarioBruto <= CalculoIR.BASE3.getBaseCalculoIR()) {
-            this.descontoIR = (this.salarioBruto - dependentes.size() * CalculoIR.valorDependentes - this.descontoINSS)
-                    * CalculoIR.BASE3.getAliquotaIR() - CalculoIR.BASE3.getParcelaIR();
-        } else if (this.salarioBruto <= CalculoIR.BASE4.getBaseCalculoIR()) {
-            this.descontoIR = (this.salarioBruto - dependentes.size() * CalculoIR.valorDependentes - this.descontoINSS)
-                    * CalculoIR.BASE4.getAliquotaIR() - CalculoIR.BASE4.getParcelaIR();
+        Double salarioBase = this.salarioBruto - dependentes.size()* CalculoIR.valorDependentes - this.descontoINSS;
+
+        if (salarioBase <= CalculoIR.BASE1.getBaseCalculoIR()) {
+            this.descontoIR = salarioBase * CalculoIR.BASE1.getAliquotaIR() - CalculoIR.BASE1.getParcelaIR();
+        } else if (salarioBase <= CalculoIR.BASE2.getBaseCalculoIR()) {
+            this.descontoIR = salarioBase * CalculoIR.BASE2.getAliquotaIR() - CalculoIR.BASE2.getParcelaIR();
+        } else if (salarioBase <= CalculoIR.BASE3.getBaseCalculoIR()) {
+            this.descontoIR = salarioBase * CalculoIR.BASE3.getAliquotaIR() - CalculoIR.BASE3.getParcelaIR();
+        } else if (salarioBase <= CalculoIR.BASE4.getBaseCalculoIR()) {
+            this.descontoIR = salarioBase * CalculoIR.BASE4.getAliquotaIR() - CalculoIR.BASE4.getParcelaIR();
         } else {
-            this.descontoIR = (this.salarioBruto - dependentes.size() * CalculoIR.valorDependentes - this.descontoINSS)
-                    * CalculoIR.BASE5.getAliquotaIR() - CalculoIR.BASE5.getParcelaIR();
-        }
-        if(this.descontoIR < 0){
-            this.descontoIR = 0.00;
+            this.descontoIR = salarioBase * CalculoIR.BASE5.getAliquotaIR() - CalculoIR.BASE5.getParcelaIR();
         }
     }
 

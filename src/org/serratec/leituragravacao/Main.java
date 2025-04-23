@@ -16,6 +16,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
@@ -118,14 +119,15 @@ public class Main {
             }
 
             if (!rejeitados.isEmpty()) {
-                FileWriter fwr = new FileWriter("C:/Users/lvinh/Desktop/rejeitados.csv");
+                String caminhoRejeitados = new File(saida).getParent() + "/rejeitados.csv";
+                FileWriter fwr = new FileWriter(caminhoRejeitados);
                 PrintWriter pwr = new PrintWriter(fwr);
 
                 for (String rejeitado : rejeitados) {
                     pwr.println(rejeitado);
                 }
                 pwr.close();
-                System.out.println("Arquivo gerado com nomes rejeitados");
+                System.err.println("Arquivo gerado com nomes rejeitados");
             }
 
             pw.close();
