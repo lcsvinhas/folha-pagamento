@@ -6,6 +6,7 @@ public enum CalculoINSS {
     FAIXA3(4190.83, 12.00 / 100, 106.60),
     FAIXA4(8157.41, 14.00 / 100, 190.42);
 
+    public static final Double teto = 951.62;
     private Double remuneracaoINSS;
     private Double aliquotaINSS;
     private Double parcelaINSS;
